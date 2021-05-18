@@ -48,7 +48,7 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define DICT_REMOVE					0 //Passing
 #define DICT_REMOVE_NOT_FOUND		0 //Passing
 #define DICT_ASSIGNMENT_OP			0 //Passing
-#define DICT_COPY_CTOR				1
+#define DICT_COPY_CTOR				0
 
 /************/
 /* Includes */
