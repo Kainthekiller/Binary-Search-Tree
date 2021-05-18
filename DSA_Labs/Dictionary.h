@@ -37,18 +37,18 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define LAB_5	1
 
 // Individual unit test toggles
-#define DICT_CTOR					0 //Passing
-#define DICT_PAIR_CTOR				0 //Passing
-#define DICT_DTOR					0 //Passing
-#define DICT_CLEAR					0 //Passing
-#define DICT_INSERT					0 //Passing
-#define DICT_INSERT_EXISTING		0 //Passing
-#define DICT_FIND					0 //Passing
-#define DICT_FIND_NOT_FOUND			0 //Passing
-#define DICT_REMOVE					0 //Passing
-#define DICT_REMOVE_NOT_FOUND		0 //Passing
-#define DICT_ASSIGNMENT_OP			0 //Passing
-#define DICT_COPY_CTOR				0
+#define DICT_CTOR					1 //Passing
+#define DICT_PAIR_CTOR				1 //Passing
+#define DICT_DTOR					1 //Passing
+#define DICT_CLEAR					1 //Passing
+#define DICT_INSERT					1 //Passing
+#define DICT_INSERT_EXISTING		1 //Passing
+#define DICT_FIND					1 //Passing
+#define DICT_FIND_NOT_FOUND			1 //Passing
+#define DICT_REMOVE					1 //Passing
+#define DICT_REMOVE_NOT_FOUND		1 //Passing
+#define DICT_ASSIGNMENT_OP			1 //Passing
+#define DICT_COPY_CTOR				1 //Passing
 
 /************/
 /* Includes */
@@ -114,6 +114,14 @@ public:
 	// In:	_copy				The object to copy from
 	Dictionary(const Dictionary& _copy) {
 		// TODO: Implement this method
+		mHashFunc = _copy.mHashFunc;
+		mNumBuckets = _copy.mNumBuckets;
+		mTable = new std::list<Pair>[mNumBuckets];
+		for (int i = 0; i < mNumBuckets; i++)
+		{
+			mTable[i] = _copy.mTable[i];
+		}
+		
 		
 	
 	}
@@ -217,21 +225,6 @@ public:
 	
 
 
-		//for (; Itr != end(tableCell); Itr++) {
-
-		//	//Key exist
-		//	if (Itr->key == _key && _key != NULL) {
-
-		//		const Value& ptr = Itr->value ;
-		//		return &ptr;
-		//	}
-		//	
-		//	//Key dose not exist ptr needs to return a null //**DONE**
-		//	else {
-		//		return nullptr;
-		//	}
-		//
-		//}
 
 	}
 
