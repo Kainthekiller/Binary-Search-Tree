@@ -3,7 +3,7 @@ File:			DList.h
 Author(s):
 	Base:		Justin Tackett
 				jtackett@fullsail.com
-	Student:
+	Student:    Phillip Yates
 
 Created:		1.17.2021
 Last Modified:	2.26.2021
@@ -34,7 +34,7 @@ NOTE: If the unit test is not on, that code will not be compiled!
 
 
 // Master toggle
-#define LAB_5	1
+#define LAB_5	0
 
 // Individual unit test toggles
 #define DICT_CTOR					1 //Passing

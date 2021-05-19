@@ -34,10 +34,10 @@ NOTE: If the unit test is not on, that code will not be compiled!
 
 
 // Master toggle
-#define LAB_6	0
+#define LAB_6	1
 
 // Individual unit test toggles
-#define MAP_POPULATE_LETTER_VALUES	0
+#define MAP_POPULATE_LETTER_VALUES	1 //Passing
 #define MAP_GET_LETTER_VALUE		0
 #define MAP_GET_WORD_VALUE			0
 #define MAP_CREATE_PAIR				0
@@ -69,6 +69,12 @@ public:
 	// In:	_letterValues		The array of 26 values
 	void PopulateLetterValues(const int* _letterValues) {
 		// TODO: Implement this method
+		
+		int i = 0;
+		while (i != 26) {
+			mLetterValues[i] = _letterValues[i];
+			i++;
+		}
 	}
 
 	// Retrieve the value of a particular letter
