@@ -41,8 +41,8 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define MAP_GET_LETTER_VALUE		1 //Passing
 #define MAP_GET_WORD_VALUE			1 //Passing
 #define MAP_CREATE_PAIR				1 //Passing
-#define MAP_LOAD_FILE				1
-#define MAP_FIND_WORD_SCORE			0
+#define MAP_LOAD_FILE				1 //Passing
+#define MAP_FIND_WORD_SCORE			1 //Passing
 
 /************/
 /* Includes */
@@ -155,6 +155,14 @@ public:
 	// Return: The word score for _word (or -1 if not found)
 	int FindValueInMap(const std::string& _word) {
 		// TODO: Implement this method
+		auto iter = mScrabbleMap.find(_word);
+		if (iter != mScrabbleMap.end())
+			{
+				return GetWordValue(_word);
+			}
+			else {
+			return -1;
+			}
 	}
 };
 
