@@ -39,16 +39,16 @@ NOTE: If the unit test is not on, that code will not be compiled!
 
 
 // Master toggle
-#define LAB_7	0
+#define LAB_7	1
 
 // Individual unit test toggles
-#define BST_CTOR								0
-#define BST_NODE_CTOR							0
-#define BST_CLEAR								0
-#define BST_DTOR								0
-#define BST_PUSH_ROOT							0
-#define BST_PUSH_ROOT_LEFT						0
-#define BST_PUSH_ROOT_RIGHT						0
+#define BST_CTOR								0 //Passing 
+#define BST_NODE_CTOR							0 //Passing
+#define BST_CLEAR								0 //Passing
+#define BST_DTOR								0 //Passing
+#define BST_PUSH_ROOT							1 //Passing
+#define BST_PUSH_ROOT_LEFT						1 //Passing
+#define BST_PUSH_ROOT_RIGHT						1 //Passing
 #define BST_PUSH_LEFT							0
 #define BST_PUSH_RIGHT							0
 #define BST_CONTAINS_TRUE						0
@@ -90,6 +90,11 @@ class BST {
 		//		_parent		The parent pointer (optional)
 		Node(const Type& _data, Node* _parent = nullptr) {
 			// TODO: Implement this method
+
+			data = _data;
+			parent = _parent;
+			left = nullptr;
+			right = nullptr;
 		}
 	};
 
@@ -102,14 +107,16 @@ public:
 	//			Always creates an empty tree
 	BST() {
 		// TODO: Implement this method
+		mRoot = nullptr;
 
 	}
+
 
 	// Destructor
 	//			Clear all dynamic memory
 	~BST() {
 		// TODO: Implement this method
-
+		Clear(mRoot);
 	}
 
 	// Copy constructor
@@ -149,6 +156,8 @@ public:
 	// Clears out the tree and readies it for re-use
 	void Clear() {
 		// TODO: Implement this method
+		Clear(mRoot);
+		mRoot = NULL;
 	}
 
 private:
@@ -160,6 +169,12 @@ private:
 	// NOTE:	Use post-order traversal
 	void Clear(Node* _curr) {
 		// TODO: Implement this method
+		if (_curr == NULL) {
+			return;
+		}		
+		Clear(_curr->left);
+		Clear(_curr->right);
+		delete _curr;
 	}
 
 public:
@@ -169,6 +184,19 @@ public:
 	// In:	_val			The value to add
 	void Push(const Type& _val) {
 		// TODO: Implement this method
+		// 
+		// 
+		//If Mroot is NULL add Val at begining
+		if (mRoot == NULL)
+		{
+			mRoot = new Node(_val);
+			return;
+		}
+
+
+		Push(_val, mRoot, mRoot->parent);
+
+
 	}
 
 private:
@@ -179,8 +207,34 @@ private:
 	//		_curr		The current Node being looked at
 	void Push(const Type& _val, Node* _curr, Node* _parent) {
 		// TODO: Implement this method (Optional)
+		Node* temp = _curr;
+
+		//Left Side
+		if (_val < temp->data)
+		{
+			if (temp->left == NULL)
+			{
+				temp->left = new Node(_val);
+				temp->left->parent = _curr;
+				return;
+			}
+		}
+		//Right Side
+		if (_val > temp->data)
+		{
+			if (temp->right == NULL) 
+			{
+				temp->right = new Node(_val);
+				temp->right->parent = _curr;
+				return;
+			}
+
+		}
+
+		
+
 	}
-	
+	//HACK
 public:
 
 	// Checks to see if a value is in the tree

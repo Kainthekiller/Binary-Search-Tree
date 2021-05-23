@@ -3,7 +3,7 @@ File:			DSA_Lab6.h
 Author(s):
 	Base:		Justin Tackett
 				jtackett@fullsail.com
-	Student:
+	Student:    Phillip Yates
 
 Created:		02.15.2021
 Last Modified:	02.26.2021
@@ -34,7 +34,7 @@ NOTE: If the unit test is not on, that code will not be compiled!
 
 
 // Master toggle
-#define LAB_6	1
+#define LAB_6	0
 
 // Individual unit test toggles
 #define MAP_POPULATE_LETTER_VALUES	1 //Passing
