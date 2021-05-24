@@ -40,22 +40,22 @@ NOTE: If the unit test is not on, that code will not be compiled!
 
 // Master toggle
 #define LAB_7	1
-
+//Hack Header
 // Individual unit test toggles
 #define BST_CTOR								0 //Passing 
 #define BST_NODE_CTOR							0 //Passing
 #define BST_CLEAR								0 //Passing
 #define BST_DTOR								0 //Passing
-#define BST_PUSH_ROOT							1 //Passing
-#define BST_PUSH_ROOT_LEFT						1 //Passing
-#define BST_PUSH_ROOT_RIGHT						1 //Passing
-#define BST_PUSH_LEFT							0
-#define BST_PUSH_RIGHT							0
-#define BST_CONTAINS_TRUE						0
-#define BST_CONTAINS_FALSE						0
-#define BST_REMOVE_CASE0_ROOT					0
-#define BST_REMOVE_CASE0_LEFT					0
-#define BST_REMOVE_CASE0_RIGHT					0
+#define BST_PUSH_ROOT							0 //Passing
+#define BST_PUSH_ROOT_LEFT						0 //Passing
+#define BST_PUSH_ROOT_RIGHT						0 //Passing
+#define BST_PUSH_LEFT							0 //Passing
+#define BST_PUSH_RIGHT							0 //Passing
+#define BST_CONTAINS_TRUE						0 //Passing
+#define BST_CONTAINS_FALSE						0 //Passing
+#define BST_REMOVE_CASE0_ROOT					1 //Passing
+#define BST_REMOVE_CASE0_LEFT					1 //Passing
+#define BST_REMOVE_CASE0_RIGHT					1 //Passing
 #define BST_REMOVE_CASE1_ROOT_LEFT				0
 #define BST_REMOVE_CASE1_ROOT_RIGHT				0
 #define BST_REMOVE_CASE1_LEFT_LEFT				0
@@ -184,16 +184,12 @@ public:
 	// In:	_val			The value to add
 	void Push(const Type& _val) {
 		// TODO: Implement this method
-		// 
-		// 
-		//If Mroot is NULL add Val at begining
+
 		if (mRoot == NULL)
 		{
 			mRoot = new Node(_val);
 			return;
 		}
-
-
 		Push(_val, mRoot, mRoot->parent);
 
 
@@ -209,6 +205,9 @@ private:
 		// TODO: Implement this method (Optional)
 		Node* temp = _curr;
 
+
+
+
 		//Left Side
 		if (_val < temp->data)
 		{
@@ -218,7 +217,15 @@ private:
 				temp->left->parent = _curr;
 				return;
 			}
+			else 
+			{
+				temp = temp->left;
+				Push(_val, temp, temp->parent);
+			}
 		}
+
+
+
 		//Right Side
 		if (_val > temp->data)
 		{
@@ -228,13 +235,18 @@ private:
 				temp->right->parent = _curr;
 				return;
 			}
+			else 
+			{
+				temp = temp->right;
+				Push(_val, temp, temp->parent);
+			}
 
 		}
 
 		
 
 	}
-	//HACK
+	
 public:
 
 	// Checks to see if a value is in the tree
@@ -244,8 +256,38 @@ public:
 	// Return:	True, if found
 	bool Contains(const Type& _val) {
 		// TODO: Implement this method
-	}
+		bool trueFalse = false;
+		Node* temp = mRoot;
 
+			while (temp != NULL)
+			{
+				
+			if (temp == nullptr)
+			{
+				return false;
+				break;
+			}
+				//Found
+				if (_val == temp->data)
+				{
+					trueFalse = true;
+					return trueFalse;
+				}
+				//Left move
+				else if (_val < temp->data)
+				{
+					temp = temp->left;
+
+				}
+				//Right move
+				else if (_val > temp->data)
+				{
+					temp = temp->right;
+				}
+		}
+		return trueFalse;
+
+	}
 private:
 
 	// Optional helper method for use with Contains and Remove methods
@@ -269,6 +311,53 @@ private:
 	//		3. Right leaf node
 	void RemoveCase0(Node* _node) {
 		// TODO: Implement this method
+		Node* temp = mRoot;
+
+
+		if (temp == _node)
+		{
+			delete temp;
+			mRoot = NULL;
+			return;
+		}
+
+		while (temp != NULL)
+		{
+			//Found
+			if (temp == _node)
+			{
+				temp->parent->left = NULL;
+				temp->parent->right = NULL;
+				delete temp;
+				mRoot = NULL;
+				return;
+			
+			}
+
+			//right
+			if (_node->data > temp->data && temp != nullptr)
+			{
+				temp->parent = temp;
+				temp = temp->right;
+			}
+			//Left
+			else if (_node->data < temp->data && temp != nullptr)
+			{
+				temp->parent = temp;
+				temp = temp->left;
+			}
+		
+
+
+
+
+
+
+		}
+
+
+
+
 	}
 
 	// Remove a node from the tree that has only one child
@@ -286,7 +375,16 @@ private:
 	//		6. Right node with right child
 	void RemoveCase1(Node* _node) {
 		// TODO: Implement this method
-	}
+
+
+
+
+
+
+
+
+
+	}//Hack Case1
 
 	// Remove a node from the tree that has both children
 	//		Case 2
