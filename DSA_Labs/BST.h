@@ -53,13 +53,13 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define BST_PUSH_RIGHT							0 //Passing
 #define BST_CONTAINS_TRUE						0 //Passing
 #define BST_CONTAINS_FALSE						0 //Passing
-#define BST_REMOVE_CASE0_ROOT					1 //Passing
-#define BST_REMOVE_CASE0_LEFT					1 //Passing
-#define BST_REMOVE_CASE0_RIGHT					1 //Passing
-#define BST_REMOVE_CASE1_ROOT_LEFT				0
-#define BST_REMOVE_CASE1_ROOT_RIGHT				0
-#define BST_REMOVE_CASE1_LEFT_LEFT				0
-#define BST_REMOVE_CASE1_LEFT_RIGHT				0
+#define BST_REMOVE_CASE0_ROOT					0 //Passing
+#define BST_REMOVE_CASE0_LEFT					0 //Passing
+#define BST_REMOVE_CASE0_RIGHT					0 //Passing
+#define BST_REMOVE_CASE1_ROOT_LEFT				1 //Passing
+#define BST_REMOVE_CASE1_ROOT_RIGHT				1 //Passing
+#define BST_REMOVE_CASE1_LEFT_LEFT				1 //Passing
+#define BST_REMOVE_CASE1_LEFT_RIGHT				1 //Passing
 #define BST_REMOVE_CASE1_RIGHT_LEFT				0
 #define BST_REMOVE_CASE1_RIGHT_RIGHT			0
 #define BST_REMOVE_CASE2_NO_SUBTREE				0
@@ -346,13 +346,6 @@ private:
 				temp->parent = temp;
 				temp = temp->left;
 			}
-		
-
-
-
-
-
-
 		}
 
 
@@ -375,9 +368,66 @@ private:
 	//		6. Right node with right child
 	void RemoveCase1(Node* _node) {
 		// TODO: Implement this method
+		Node* temp = mRoot;
 
 
 
+
+		// Root Node
+		if (temp == _node)
+		{
+			if (temp->left != NULL && temp->right == NULL)
+			{
+				mRoot = mRoot->left;
+				mRoot->parent = nullptr;
+				delete temp;
+			}
+			else if (temp->right != NULL && temp->left == NULL)
+			{
+				mRoot = mRoot->right;
+				mRoot->parent = nullptr;
+				delete temp;
+			}
+			return;
+		}
+		while (temp != NULL)
+		{
+
+
+			//Left Left Child
+
+			//Right
+			if (_node->data > temp->data && temp != nullptr)
+			{
+				temp->parent = temp;
+				temp = temp->right;
+			}
+
+			else if (_node->data < temp->data && temp != nullptr)
+			{
+				temp->parent = temp;
+				temp = temp->left;
+
+			}
+			if (temp == _node)
+			{
+				if (temp->parent->left == temp && temp != nullptr) 
+				{
+					temp->parent->left = temp->left;
+					temp->left->parent = temp->parent;
+					delete temp;
+					return;
+				}
+				else if (temp->parent->right == temp && temp != nullptr)
+				{
+					temp->parent->right = temp->right;
+					temp->right->parent = temp->parent;
+					delete temp;
+					return;
+				}
+			}
+		}
+		//Node after removed node's parent was not set to removed node's parent
 
 
 
