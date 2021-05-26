@@ -54,15 +54,15 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define BST_CONTAINS_TRUE						0 //Passing
 #define BST_CONTAINS_FALSE						0 //Passing
 #define BST_REMOVE_CASE0_ROOT					0 //Passing
-#define BST_REMOVE_CASE0_LEFT					0 //Passing
-#define BST_REMOVE_CASE0_RIGHT					0 //Passing
-#define BST_REMOVE_CASE1_ROOT_LEFT				1 //Passing
-#define BST_REMOVE_CASE1_ROOT_RIGHT				1 //Passing
-#define BST_REMOVE_CASE1_LEFT_LEFT				1 //Passing
-#define BST_REMOVE_CASE1_LEFT_RIGHT				1 //Passing
-#define BST_REMOVE_CASE1_RIGHT_LEFT				0
-#define BST_REMOVE_CASE1_RIGHT_RIGHT			0
-#define BST_REMOVE_CASE2_NO_SUBTREE				0
+#define BST_REMOVE_CASE0_LEFT					1 //Passing //Causes Clear to Fail
+#define BST_REMOVE_CASE0_RIGHT					0 //Passing //Causes Clear to Fail
+#define BST_REMOVE_CASE1_ROOT_LEFT				0 //Passing
+#define BST_REMOVE_CASE1_ROOT_RIGHT				0 //Passing
+#define BST_REMOVE_CASE1_LEFT_LEFT				0 //Passing
+#define BST_REMOVE_CASE1_LEFT_RIGHT				0 //Passing
+#define BST_REMOVE_CASE1_RIGHT_LEFT				0 //Passing
+#define BST_REMOVE_CASE1_RIGHT_RIGHT			0 //Passing
+#define BST_REMOVE_CASE2_NO_SUBTREE				0 
 #define BST_REMOVE_CASE2_SUBTREE				0
 #define BST_REMOVE								0
 #define BST_REMOVE_NOT_FOUND					0
@@ -157,7 +157,7 @@ public:
 	void Clear() {
 		// TODO: Implement this method
 		Clear(mRoot);
-		mRoot = NULL;
+		mRoot = nullptr;
 	}
 
 private:
@@ -171,10 +171,11 @@ private:
 		// TODO: Implement this method
 		if (_curr == NULL) {
 			return;
-		}		
-		Clear(_curr->left);
-		Clear(_curr->right);
-		delete _curr;
+		}
+			Clear(_curr->left);
+			Clear(_curr->right);
+			delete _curr;
+	
 	}
 
 public:
@@ -317,7 +318,7 @@ private:
 		if (temp == _node)
 		{
 			delete temp;
-			mRoot = NULL;
+			mRoot = nullptr;
 			return;
 		}
 
@@ -329,9 +330,8 @@ private:
 				temp->parent->left = NULL;
 				temp->parent->right = NULL;
 				delete temp;
-				mRoot = NULL;
+				mRoot = nullptr;
 				return;
-			
 			}
 
 			//right
@@ -346,9 +346,15 @@ private:
 				temp->parent = temp;
 				temp = temp->left;
 			}
+			else
+			{
+				temp->parent->left = NULL;
+				temp->parent->right = NULL;
+				delete temp;
+				mRoot = nullptr;
+				return;
+			}
 		}
-
-
 
 
 	}
@@ -392,28 +398,34 @@ private:
 		}
 		while (temp != NULL)
 		{
-
-
-			//Left Left Child
-
-			//Right
+			// Go Right
 			if (_node->data > temp->data && temp != nullptr)
 			{
 				temp->parent = temp;
 				temp = temp->right;
 			}
-
+			//Go Left 
 			else if (_node->data < temp->data && temp != nullptr)
 			{
 				temp->parent = temp;
 				temp = temp->left;
 
 			}
-			if (temp == _node)
+			if (_node == temp)
 			{
-				if (temp->parent->left == temp && temp != nullptr) 
+				//Left Child W/ Left Child
+				if (temp->parent->left == temp && temp != nullptr)
 				{
-					temp->parent->left = temp->left;
+						temp->parent->left = temp->left;
+						temp->left->parent = temp->parent;
+						delete temp;
+						return;
+				
+				}
+				//Left Child W/Right Child
+				else if (temp->parent->right == temp && temp->right == NULL && temp != nullptr)
+				{
+					temp->parent->right = temp->left;
 					temp->left->parent = temp->parent;
 					delete temp;
 					return;
@@ -425,9 +437,20 @@ private:
 					delete temp;
 					return;
 				}
+
 			}
 		}
-		//Node after removed node's parent was not set to removed node's parent
+
+			
+
+			
+
+			//Inside While loop still
+
+
+
+		
+		
 
 
 
