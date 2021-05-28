@@ -285,12 +285,7 @@ public:
 	//		This allows us to daisy-chain
 	DList& operator=(const DList& _assign) {   
 		// TODO: Implement this method
-		if (this != &_assign)      //Needs to be passed by ref so it can come back changed
-		{
-			Clear();
-			RecursiveCopy(_assign.mHead); //Goes in to copy
-		}
-		return *this;
+		
 
 	}
 
