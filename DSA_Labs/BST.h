@@ -3,7 +3,7 @@ File:			BST.h
 Author(s):
 	Base:		Justin Tackett
 				jtackett@fullsail.com
-	Student:
+	Student:    Phillip Yates
 
 Created:		03.05.2021
 Last Modified:	03.21.2021
@@ -39,8 +39,8 @@ NOTE: If the unit test is not on, that code will not be compiled!
 
 
 // Master toggle
-#define LAB_7	1
-//Hack Header
+#define LAB_7	0
+
 // Individual unit test toggles
 #define BST_CTOR								1 //Passing 
 #define BST_NODE_CTOR							1 //Passing
@@ -64,7 +64,7 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define BST_REMOVE_CASE1_RIGHT_RIGHT			1 //Passing
 #define BST_REMOVE_CASE2_NO_SUBTREE				1 //Passing
 #define BST_REMOVE_CASE2_SUBTREE				1 //Passing
-#define BST_REMOVE								1 //Passing //Passes half the time fails the other.
+#define BST_REMOVE								1 //Passing
 #define BST_REMOVE_NOT_FOUND					1 //Passing 
 #define BST_IN_ORDER_TRAVERSAL					1 //Passing
 #define BST_ASSIGNMENT_OP						1 //Passing
@@ -159,7 +159,6 @@ private:
 		
 	}
 
-	//Hack Copy
 public:
 
 	// Clears out the tree and readies it for re-use
@@ -185,7 +184,7 @@ private:
 		delete _curr;
 
 	}
-	//Hack Clear
+
 public:
 
 	// Add a value into the tree
@@ -329,7 +328,7 @@ private:
 		}
 		return nullptr;
 	}
-	//Hack Find Node
+
 	// Remove a leaf node from the tree
 	//		Case 0
 	// 	   
@@ -374,7 +373,7 @@ private:
 
 
 	}
-	//HACK Case 0
+	
 
 	// Remove a node from the tree that has only one child
 	//		Case 1
@@ -419,6 +418,15 @@ private:
 			delete temp;
 			return;
 		}
+		// Left Child / W right Child
+		if (_node->parent->left == temp && temp->right != NULL)
+		{
+			_node->parent->left = temp->right;
+			temp->right->parent = temp->parent;
+			delete temp;
+			return;
+		}
+
 		//Root Right Child /W Right Child
 		if (_node->parent->right == temp && temp->right != NULL)
 		{
@@ -427,6 +435,7 @@ private:
 			delete temp;
 			return;
 		}
+
 		//Right Child /W Left Child
 		if (_node->parent->right == temp && temp->right == NULL)
 		{
@@ -440,7 +449,7 @@ private:
 			temp->right->parent = temp->parent;
 		}
 		delete temp;
-	}//Hack Case1
+	}
 
 	// Remove a node from the tree that has both children
 	//		Case 2
@@ -476,7 +485,7 @@ private:
 
 	}
 
-	//Hack Case 2
+
 public:
 
 	// Removes a value from tree (first instance only)
@@ -510,7 +519,7 @@ public:
 			return true;
 		}
 
-	}//Hack Remove
+	}
 
 	// Returns a space-delimited string of the tree in order
 	/*
@@ -536,7 +545,7 @@ public:
 		}
 		return  str;
 	}
-	//Hack Inorder
+
 
 
 private:

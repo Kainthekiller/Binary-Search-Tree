@@ -3,7 +3,7 @@ File:			Huffman.h
 Author(s):
 	Base:		Justin Tackett
 				jtackett@fullsail.com
-	Student:
+	Student:    Yates Phillip
 
 Created:		03.14.2021
 Last Modified:	03.14.2021
@@ -17,6 +17,9 @@ Notes:			Property of Full Sail University
 /************/
 /* Includes */
 /************/
+#include <queue>
+#include <iostream>
+#include <fstream>
 #include <queue>
 #include "BitStream.h"
 
@@ -39,18 +42,18 @@ NOTE: If the unit test is not on, that code will not be compiled!
 */
 
 // Master toggle
-#define LAB_8 0
+#define LAB_8 1
 
 // Individual unit test toggles
-#define HUFFMAN_CTOR					0
-#define HUFFMAN_GENERATE_FREQUENCY		0
-#define HUFFMAN_GENERATE_LEAFLIST		0
-#define HUFFMAN_GENERATE_TREE			0
-#define HUFFMAN_CLEAR_TREE				0
-#define HUFFMAN_DTOR					0
-#define HUFFMAN_GENERATE_ENCODING		0
-#define HUFFMAN_COMPRESS				0
-#define HUFFMAN_DECOMPRESS				0
+#define HUFFMAN_CTOR					1 //Passing
+#define HUFFMAN_GENERATE_FREQUENCY		1 //Passing
+#define HUFFMAN_GENERATE_LEAFLIST		1 //Passing
+#define HUFFMAN_GENERATE_TREE			1 //Passing
+#define HUFFMAN_CLEAR_TREE				1 //Passing
+#define HUFFMAN_DTOR					1 //Passing
+#define HUFFMAN_GENERATE_ENCODING		1 //Passing
+#define HUFFMAN_COMPRESS				1 //Passing
+#define HUFFMAN_DECOMPRESS				1 //Passing
 
 #if LAB_8
 // Wraps up Huffman compression algorithm
@@ -75,6 +78,13 @@ class Huffman {
 		//		_parent		The parent node (OPTIONAL)
 		HuffNode(short _value, unsigned int _freq, HuffNode* _left = nullptr, HuffNode* _right = nullptr, HuffNode* _parent = nullptr)
 			: value(_value), freq(_freq), left(_left), right(_right), parent(_parent) {
+
+			value = _value;
+			freq = _freq;
+			left = _left;
+			right = _right;
+			parent = _parent;
+
 		}
 
 		// Copy constructor
@@ -114,17 +124,22 @@ class Huffman {
 	//		_access			The way to open the file
 	Huffman(const std::string& _fileName) {
 		// 1. Assign the data members the values from the parameters
-		
+		mFileName = _fileName;
 		// 2. Zero out the frequency table
-		
+		for (int i = 0; i < 257; i++)
+		{
+			mFrequencyTable[i] = 0;
+		}
 		// 3. Set the root to null
-		
+
+		mRoot = nullptr;
 	}
 
 	// Destructor
 	//		Needs to clean up any left-over dynamic memory in tree
 	~Huffman() {
 		// 1. Clear out the tree
+		ClearTree();
 	}
 
 
@@ -135,35 +150,53 @@ class Huffman {
 	//				Example:  'A' is ASCII 65, so if A is the character being checked, [65] of your array would get incremented
 	//			[256] of your array is the total count of characters in the file
 	void GenerateFrequencyTable() {
-		 
-		// 1. Open the file in binary mode	
-		
-		// 2. Get the total count of the file	(This can also be done in the next step instead)		
-		
-		// 3. Read the file one byte at a time, and increment the corresponding index
 
-		// 4. Close the file when complete
-		
+		// 1. Open the file in binary mode	
+		std::ifstream ifl(mFileName, std::ios_base::binary);
+		char currentValue;
+		ifl.read(&currentValue, 1);
+		while (!ifl.eof())
+		{
+			mFrequencyTable[(int)currentValue]++;
+			mFrequencyTable[256]++; // Total Count of Characters in file
+			ifl.read((char*)&currentValue, 1); // Values read in
+		}
+		ifl.close();
 	}
+	//Hack GenerateFreqTable;
+
 
 	// Generate the leaf list for the Huffman algorithm (used in READ AND WRITE)
 	//
 	// Note:	Will cause leaks until ClearTree is implemented
+	//Loops through mFrequencyTable, creating new huff nodesand putting 
+	//	them into mLeafList 
+	//	for each character with a frequency greater than 0.
 	void GenerateLeafList() {
-	
+		HuffNode* LeafList = mRoot;
 		// 1. Iterate through the frequency table (for all ASCII values) and dynamically create a leaf node for each non-0
 		//		frequency.  Add it to the mLeafList vector.
-
+		for (int i = 0; i < 256; i++)
+		{
+			if (mFrequencyTable[i] > 0)
+			{
+				mLeafList.push_back(new HuffNode(i, mFrequencyTable[i]));
+			}
+		}
 	}
 
+	//Hack Current GenerateLeafList;
 	// Generate a Huffman tree
 	void GenerateTree() {
 		// 1. Create the priority queue
 		//		This will be storing HuffNode*'s
 		//		in a vector, and will be using the HuffCompare for comparison
-
+		priority_queue< HuffNode*, vector<HuffNode*>, HuffCompare>queue;
 		// 2. Add in all values from your leaf list
-		
+		for (int i = 0; i < mLeafList.size(); i++)
+		{
+			queue.push(mLeafList[i]);
+		}
 		// 3. Enter the tree generation algorithm
 		//		While the queue has more than 1 node
 		//			Store the top two nodes into some temporary pointers and pop them
@@ -171,8 +204,20 @@ class Huffman {
 		//			Set the parent value to -1, and frequency to the sum of its children
 		//			Set the 1st and 2nd node's parent to the new node you created
 		//			Insert new node into queue
-
+		while (queue.size() != 1)
+		{
+			HuffNode* top = queue.top();
+			queue.pop();
+			HuffNode* below = queue.top();
+			queue.pop();
+			HuffNode* parent = new HuffNode(-1, (top->freq + below->freq));
+			parent->left = top;
+			parent->right = below;
+			top->parent = below->parent = parent;
+			queue.push(parent);
+		}
 		// 4. Set the root of the tree (this will be the only node in the queue)
+		mRoot = queue.top();
 	}
 
 	// Generating the encoding table for the Huffman algorithm
@@ -184,12 +229,43 @@ class Huffman {
 		//			As you move up, push a 0 to the vector if you passed through a left child connection
 		//			and a 1 if you passed through a right
 		//			Once you hit the root node, reverse the values in the vector
+
+		for (size_t i = 0; i < mLeafList.size(); i++)
+		{
+			HuffNode* node = mLeafList[i];
+			vector<bool>* temp = &mEncodingTable[mLeafList[i]->value];
+			while (node->parent != nullptr)
+			{
+
+
+
+				if (node->parent->left == node)
+				{
+					temp->push_back(0);
+				}
+
+
+
+
+				else if (node->parent->right == node)
+				{
+					temp->push_back(1);
+				}
+				node = node->parent;
+			}
+
+
+
+			reverse(temp->begin(), temp->end());
+		}
 	}
+
 
 	// Clear the tree of all dynamic memory (by using the helper function)
 	void ClearTree() {
 		// 1. Call the helper function with the root and then set it back to null
-
+		ClearTree(mRoot);
+		mRoot = nullptr;
 	}
 
 	// Clear the tree of all dynamic memory (recursive helper function)
@@ -199,6 +275,13 @@ class Huffman {
 	// Note:	This will be a recursive function that does a post-order deletion
 	void ClearTree(HuffNode* _curr) {
 		// 1. Implement this method
+		{
+			if (_curr == nullptr)
+				return;
+			ClearTree(_curr->left);
+			ClearTree(_curr->right);
+			delete _curr;
+		}
 	}
 
 	// Write a Huffman compressed file to disk
@@ -208,18 +291,25 @@ class Huffman {
 	// Note: You will use most of your other functionality to complete this function
 	void Compress(const char* _outputFile) {
 		// 1. Create the frequency table, leaf list, tree, and encoding table
-
+		GenerateFrequencyTable();
+		GenerateLeafList();
+		GenerateTree();
+		GenerateEncodingTable();
 		// 2. Create a BitOStream and supply it the huffman header
-
+		BitOStream bitstream(_outputFile, (const char*)mFrequencyTable, sizeof(int) * 257);
 		// 3. Open the input file in binary mode with a standard ifstream
-
+		ifstream file(mFileName, ios_base::binary);
 		// 4. Start the compression process.   (You can read the whole file into a buffer first if you want)
 		//		For each character in the original file, write out the bit-code from the encoding table
-		
+		for (size_t i = 0; i < mFrequencyTable[256]; i++)
+		{
+			bitstream << mEncodingTable[(unsigned char)file.get()];
+		}
 		// 5. Close the file streams when done
-
+		file.close();
+		bitstream.Close();
 		// 6. Clear the tree (and optional buffer)
-
+		ClearTree();
 	}
 
 	// Decompress a huffman-compressed file
@@ -229,23 +319,43 @@ class Huffman {
 	// Note: The mFileName will be the compressed file
 	void Decompress(const char* _outputFile) {
 		// 1. Create a BitIStream and read the frequency table
+		BitIStream bitstream(mFileName.c_str(), (char*)mFrequencyTable, 257 * 4);
 
 		// 2. Create the leaf list and tree
-
+		GenerateLeafList();
+		GenerateTree();
 		// 3. Create the stream for output (binary mode)
-
+		ofstream file(_outputFile, ios_base::binary);
 		// 4. Create a bool to use for traversing down the list, and a char to store the character for writing
-
+		bool trueFalse;
+		char charHolder;
 		// 5. Create a node pointer for use in traversing the list (start it at the top)
-
+		HuffNode* nodePTR = mRoot;
 		// 6. Go through the compressed file one bit at a time, traversing through the tree
 		//		When you get to a leaf node, write out the value, and go back to the root
 		//	Note: Remember, there may be trailing 0's at the end of the file, so only loop the appropriate number of times
-
+		for (size_t i = 0; i < mFrequencyTable[256]; i++)
+		{
+			while (nodePTR->left != nullptr && nodePTR->right != nullptr)
+			{
+				bitstream >> trueFalse;
+				if (trueFalse == true)
+				{
+					nodePTR = nodePTR->right;
+				}
+				else {
+					nodePTR = nodePTR->left;
+				}
+			}
+			charHolder = (char)nodePTR->value;
+			file << charHolder;
+			nodePTR = mRoot;
+		}
 		// 7. Close the streams
-
+		bitstream.Close();
+		file.close();
 		// 8. Clean up the dynamic memory by clearing the tree
-
+		ClearTree();
 	}
 };
 
